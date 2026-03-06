@@ -1,522 +1,326 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
-import { CheckCircle2, FileText, Zap, BarChart3, Download, Settings, ArrowRight } from 'lucide-react'
+import { ArrowRight, CheckCircle2, FileText, Download, Layout, ShieldCheck, Sparkles, Zap, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { TemplateCard, TEMPLATE_CATEGORIES, TemplateType } from '@/components/template-selector'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+  const router = useRouter()
+
+  // Select a few attractive templates to showcase
+  const featuredTemplates: { id: TemplateType; name: string; description: string }[] = [
+    TEMPLATE_CATEGORIES.find(c => c.name.includes('Modern'))?.templates.find(t => t.id === 'modern')!,
+    TEMPLATE_CATEGORIES.find(c => c.name.includes('Creative'))?.templates.find(t => t.id === 'creative-portfolio')!,
+    TEMPLATE_CATEGORIES.find(c => c.name.includes('Executive'))?.templates.find(t => t.id === 'executive')!,
+    TEMPLATE_CATEGORIES.find(c => c.name.includes('Tech'))?.templates.find(t => t.id === 'tech')!,
+  ].filter(Boolean)
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background selection:bg-primary/20">
       <style>{`
-        @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
         @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
         }
-        
-        @keyframes glow {
-          0%, 100% {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-          }
-          50% {
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
-          }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+          70% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
         }
-        
-        .animate-slideInUp {
-          animation: slideInUp 0.6s ease-out;
-        }
-        
-        .animate-slideInUp-delay-1 {
-          animation: slideInUp 0.6s ease-out 0.1s both;
-        }
-        
-        .animate-slideInUp-delay-2 {
-          animation: slideInUp 0.6s ease-out 0.2s both;
-        }
-        
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-        
-        .animate-glow {
-          animation: glow 3s ease-in-out infinite;
-        }
-        
-        .card-hover {
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .card-hover:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-fade-up-1 { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
+        .animate-fade-up-2 { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-delayed { animation: float 6s ease-in-out 3s infinite; }
+        .glass-nav {
+          background: rgba(var(--background), 0.8);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(var(--border), 0.4);
         }
       `}</style>
 
       {/* Navigation */}
-      <nav className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center animate-glow">
-              <FileText className="w-5 h-5 text-primary-foreground" />
+      <nav className="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo(0,0)}>
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform duration-300">
+              <FileText className="w-5 h-5 fill-white/20" />
             </div>
-            <span className="text-xl font-bold text-foreground">ResumeFlow</span>
+            <span className="text-2xl font-black tracking-tight text-foreground">
+              Resume<span className="text-blue-600">Flow</span>
+            </span>
           </div>
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="#features" className="text-muted-foreground hover:text-foreground transition duration-200">
-              Features
-            </Link>
-            <Link href="#benefits" className="text-muted-foreground hover:text-foreground transition duration-200">
-              Benefits
-            </Link>
-            <Link href="#pricing" className="text-muted-foreground hover:text-foreground transition duration-200">
-              Pricing
-            </Link>
+          
+          <div className="hidden md:flex items-center gap-8 font-medium text-sm text-muted-foreground">
+            <a href="#how-it-works" className="hover:text-foreground transition-colors">How it Works</a>
+            <a href="#templates" className="hover:text-foreground transition-colors">Templates</a>
+            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Button variant="ghost" className="text-foreground hover:bg-secondary transition duration-200">
-              Log in
-            </Button>
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition duration-200">
-              Get Started
-            </Button>
+            <Link href="/editor">
+              <Button className="hidden sm:flex h-11 px-6 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-600/20 hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-0.5 transition-all duration-300" style={{ animation: 'pulse-glow 2.5s infinite' }}>
+                Create Resume
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 overflow-hidden">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="animate-slideInUp">
-              <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight text-balance bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                Land Your Dream Job
+      <main className="pt-20">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden pt-20 pb-32 lg:pt-32 lg:pb-40">
+          <div className="absolute inset-0 top-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+          <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-500 opacity-20 blur-[100px]"></div>
+          
+          <div className="max-w-[1400px] mx-auto px-6 grid lg:grid-cols-[1fr_500px] gap-16 lg:gap-24 items-center relative z-10">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold text-sm mb-8 animate-fade-up">
+                <Sparkles className="w-4 h-4" />
+                <span>The #1 Free Resume Builder</span>
+              </div>
+              <h1 className="text-6xl sm:text-7xl lg:text-[80px] font-black text-foreground leading-[1.1] tracking-tight mb-8 animate-fade-up-1">
+                Land your dream job with a <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">perfect</span> resume.
               </h1>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-xl text-balance">
-                Create a professional resume in minutes. AI-powered suggestions help you stand out to recruiters with proven templates and smart formatting.
+              <p className="text-xl sm:text-2xl text-muted-foreground leading-relaxed mb-10 animate-fade-up-2 max-w-xl font-medium">
+                Create a professional, ATS-friendly resume in minutes. No sign-up required. Completely free forever.
               </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 animate-slideInUp-delay-1">
-              <Link href="/editor">
-                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 transition duration-200">
-                  Try Editor Now
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="border-border hover:bg-secondary bg-transparent shadow-md hover:shadow-lg transition duration-200">
-                Watch Demo
-              </Button>
-            </div>
-            <p className="text-sm text-muted-foreground mt-6 animate-slideInUp-delay-2">
-              No credit card required. Takes just 5 minutes to create your first resume.
-            </p>
-          </div>
-
-          {/* Hero Image */}
-          <div className="relative animate-float">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/10 rounded-3xl blur-3xl opacity-60" />
-            <div className="relative bg-card border border-border rounded-3xl p-8 shadow-2xl overflow-hidden">
-              <Image
-                src="/hero-resume.jpg"
-                alt="Resume builder preview"
-                width={500}
-                height={400}
-                loading="eager"
-                className="w-full h-auto rounded-2xl object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="bg-secondary/50 py-12 border-y border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">500K+</div>
-              <p className="text-muted-foreground">Resumes Created</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">92%</div>
-              <p className="text-muted-foreground">Interview Rate</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">3x</div>
-              <p className="text-muted-foreground">Faster Creation</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">4.9★</div>
-              <p className="text-muted-foreground">User Rating</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-foreground mb-4 text-balance">Powerful Features</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
-            Everything you need to create a resume that gets noticed
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: Zap,
-              title: 'AI-Powered Suggestions',
-              description: 'Get real-time suggestions to improve your resume content and highlight your best achievements.',
-              color: 'from-yellow-50 to-orange-50',
-            },
-            {
-              icon: FileText,
-              title: 'Beautiful Templates',
-              description: 'Choose from professionally designed templates that are ATS-optimized and guaranteed to impress.',
-              color: 'from-blue-50 to-cyan-50',
-            },
-            {
-              icon: Download,
-              title: 'Easy Export',
-              description: 'Download your resume as PDF or Word document instantly. Print-ready formatting included.',
-              color: 'from-green-50 to-emerald-50',
-            },
-            {
-              icon: Settings,
-              title: 'Customization',
-              description: 'Fully customizable colors, fonts, and layouts. Make your resume uniquely yours.',
-              color: 'from-purple-50 to-pink-50',
-            },
-            {
-              icon: BarChart3,
-              title: 'Performance Analytics',
-              description: 'Track how your resume performs and get insights on what recruiters are looking for.',
-              color: 'from-indigo-50 to-blue-50',
-            },
-            {
-              icon: CheckCircle2,
-              title: 'ATS Compatible',
-              description: 'All our templates are optimized to pass Applicant Tracking Systems used by major companies.',
-              color: 'from-teal-50 to-cyan-50',
-            },
-          ].map((feature, index) => {
-            const Icon = feature.icon
-            return (
-              <div
-                key={index}
-                className={`card-hover bg-gradient-to-br ${feature.color} border border-border rounded-2xl p-8 shadow-sm`}
-                style={{
-                  animation: `slideInUp 0.6s ease-out ${0.1 * (index + 1)}s both`,
-                }}
-              >
-                <div className="w-14 h-14 bg-primary/15 rounded-lg flex items-center justify-center mb-5 group-hover:scale-110 transition duration-300">
-                  <Icon className="w-7 h-7 text-primary" />
+              
+              <div className="flex flex-col sm:flex-row gap-5 animate-fade-up-2" style={{ animationDelay: '0.3s' }}>
+                <Link href="/editor">
+                  <Button size="lg" className="h-14 px-8 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold shadow-xl shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/40 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto">
+                    Build My Resume
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+                <a href="#templates">
+                  <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-2 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 text-foreground text-lg font-bold transition-all duration-300 w-full sm:w-auto">
+                    View Templates
+                  </Button>
+                </a>
+              </div>
+              
+              <div className="mt-12 flex items-center gap-4 text-sm font-semibold text-slate-500 dark:text-slate-400 animate-fade-up-2" style={{ animationDelay: '0.4s' }}>
+                <div className="flex -space-x-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className={`w-10 h-10 rounded-full border-2 border-background bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-500 z-[${10-i}]`}>
+                      {String.fromCharCode(64+i)}
+                    </div>
+                  ))}
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section id="benefits" className="bg-secondary/50 py-20 border-y border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-foreground mb-6">Why Choose ResumeFlow?</h2>
-              <div className="space-y-4">
-                {[
-                  'Save hours with our intuitive builder and auto-fill features',
-                  'Stand out with AI-powered content suggestions and keywords',
-                  'Pass ATS screening with properly formatted, scannable templates',
-                  'Get hired faster with data-backed design and content strategies',
-                  'Free forever plan with no credit card required',
-                  'Export in any format - PDF, Word, or plain text',
-                ].map((benefit, index) => (
-                  <div key={index} className="flex gap-3 items-start">
-                    <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
-                    <p className="text-foreground leading-relaxed">{benefit}</p>
+                <div>
+                  <div className="flex items-center text-amber-500 mb-0.5">
+                    {'★★★★★'.split('').map((star, i) => <span key={i}>{star}</span>)}
                   </div>
-                ))}
+                  <p>Trusted by 500k+ users</p>
+                </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-8 shadow-lg">
-              <div className="space-y-3">
-                {[...Array(8)].map((_, i) => (
-                  <div key={i}>
-                    <div className="h-2 bg-secondary rounded-full w-full mb-2" />
-                    <div className="h-2 bg-secondary/60 rounded-full w-4/5" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-foreground mb-4 text-balance">Simple Pricing</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
-            Start free. Upgrade only if you need advanced features.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              name: 'Free',
-              price: '$0',
-              features: ['1 Resume', 'Basic Templates', 'PDF Export', 'Email Support'],
-              cta: 'Get Started',
-              popular: false,
-            },
-            {
-              name: 'Pro',
-              price: '$9.99',
-              period: '/month',
-              features: [
-                'Unlimited Resumes',
-                'Premium Templates',
-                'All Export Formats',
-                'AI Suggestions',
-                'Priority Support',
-                'Custom Branding',
-              ],
-              cta: 'Start Free Trial',
-              popular: true,
-            },
-            {
-              name: 'Teams',
-              price: '$29.99',
-              period: '/month',
-              features: [
-                'Up to 5 Users',
-                'Everything in Pro',
-                'Team Collaboration',
-                'Admin Controls',
-                'Bulk Export',
-                '24/7 Support',
-              ],
-              cta: 'Contact Sales',
-              popular: false,
-            },
-          ].map((plan, index) => (
-            <div
-              key={index}
-              className={`card-hover rounded-2xl border transition-all ${
-                plan.popular
-                  ? 'border-primary bg-gradient-to-br from-blue-50 to-cyan-50 shadow-2xl md:scale-105'
-                  : 'border-border bg-card hover:border-primary/30 hover:shadow-xl'
-              } p-8`}
-              style={{
-                animation: `slideInUp 0.6s ease-out ${0.15 * (index + 1)}s both`,
-              }}
-            >
-              {plan.popular && (
-                <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-sm font-semibold px-3 py-1 rounded-full inline-block mb-4 shadow-lg">
-                  Most Popular
+            {/* Hero Visual: Floating Templates */}
+            <div className="relative hidden lg:block h-[700px] perspective-[2000px]">
+              {featuredTemplates[0] && (
+                <div className="absolute top-0 right-10 w-[420px] transform rotate-y-[-15deg] rotate-z-[2deg] shadow-2xl rounded-xl animate-float" style={{ transformStyle: 'preserve-3d' }}>
+                  <TemplateCard template={featuredTemplates[0]} selected={false} onSelect={() => router.push('/editor')} />
                 </div>
               )}
-              <h3 className="text-3xl font-bold text-foreground mb-2">{plan.name}</h3>
-              <div className="mb-6">
-                <span className="text-5xl font-bold text-foreground">{plan.price}</span>
-                {plan.period && <span className="text-muted-foreground ml-1">{plan.period}</span>}
-              </div>
-              <Button
-                className={`w-full mb-8 shadow-lg hover:shadow-xl transition duration-200 ${
-                  plan.popular
-                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground hover:scale-105'
-                    : 'border border-border text-foreground hover:bg-secondary'
-                }`}
-                variant={plan.popular ? 'default' : 'outline'}
-              >
-                {plan.cta}
-              </Button>
-              <ul className="space-y-3">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex gap-3 items-center text-foreground">
-                    <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              {featuredTemplates[1] && (
+                <div className="absolute top-40 right-40 w-[380px] transform rotate-y-[-10deg] rotate-z-[-4deg] shadow-2xl rounded-xl animate-float-delayed opacity-90 hover:opacity-100 transition-opacity" style={{ transformStyle: 'preserve-3d' }}>
+                  <TemplateCard template={featuredTemplates[1]} selected={false} onSelect={() => router.push('/editor')} />
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Template Showcase Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-foreground mb-4 text-balance">Beautiful Templates Ready to Use</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-balance">
-            Choose from 17 professionally designed templates optimized for ATS and recruiters
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {[
-            { name: 'Classic', color: 'bg-slate-50', icon: '📄' },
-            { name: 'Modern', color: 'bg-blue-50', icon: '✨' },
-            { name: 'Executive', color: 'bg-red-50', icon: '💼' },
-            { name: 'Tech', color: 'bg-purple-50', icon: '⚙️' },
-            { name: 'Creative', color: 'bg-cyan-50', icon: '🎨' },
-            { name: 'Timeline', color: 'bg-orange-50', icon: '📊' },
-          ].map((template, idx) => (
-            <div
-              key={idx}
-              className="card-hover bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50"
-              style={{ animation: `slideInUp 0.6s ease-out ${0.05 * (idx + 1)}s both` }}
-            >
-              <div className={`${template.color} h-48 flex items-center justify-center text-5xl`}>
-                {template.icon}
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-foreground mb-2">{template.name}</h3>
-                <p className="text-sm text-muted-foreground">Professional & ATS-friendly</p>
-              </div>
+        {/* Logo Cloud */}
+        <section className="border-y border-border/50 bg-slate-50/50 dark:bg-slate-900/20 py-10">
+          <div className="max-w-[1400px] mx-auto px-6 text-center">
+            <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-8">Resumes built here have hired people at</p>
+            <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+              {['Google', 'Microsoft', 'Amazon', 'Meta', 'Netflix', 'Apple'].map(company => (
+                <span key={company} className="text-2xl font-black text-slate-600 dark:text-slate-300">{company}</span>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        </section>
 
-        <div className="text-center">
-          <Link href="/editor">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl">
-              Explore All 17 Templates
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+        {/* How It Works */}
+        <section id="how-it-works" className="py-32">
+          <div className="max-w-[1400px] mx-auto px-6">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <h2 className="text-4xl sm:text-5xl font-black text-foreground tracking-tight mb-6">Build your resume in 3 easy steps</h2>
+              <p className="text-xl text-muted-foreground font-medium">We've streamlined the entire process. No formatting headaches, just plug in your info and go.</p>
+            </div>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 border-t border-border py-24 overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl animate-float" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '1.5s' }} />
-        </div>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-6 text-balance">Ready to Build Your Resume?</h2>
-          <p className="text-xl text-muted-foreground mb-10 text-balance">
-            Join thousands of job seekers who have landed their dream jobs with ResumeFlow.
-          </p>
-          <Link href="/editor">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl hover:shadow-3xl hover:scale-110 transition duration-300">
-              Create Your Resume Today
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+            <div className="grid md:grid-cols-3 gap-12 relative">
+              <div className="hidden md:block absolute top-[60px] left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-blue-100 via-blue-500 to-blue-100 dark:from-blue-900 dark:via-blue-500 dark:to-blue-900 opacity-30"></div>
+              
+              {[
+                { step: '01', title: 'Pick a Template', desc: 'Choose from our library of 17+ professional, ATS-friendly templates designed by HR experts.', icon: Layout },
+                { step: '02', title: 'Fill in Details', desc: 'Use our powerful editor to quickly add your experience, education, and skills without messing up the layout.', icon: FileText },
+                { step: '03', title: 'Download & Apply', desc: 'Export your pixel-perfect resume as a PDF and start applying to your dream jobs immediately.', icon: Download },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={i} className="relative z-10 flex flex-col items-center text-center group">
+                    <div className="w-24 h-24 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 shadow-xl flex items-center justify-center mb-8 relative group-hover:-translate-y-2 transition-transform duration-300">
+                      <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm flex items-center justify-center ring-4 ring-background">
+                        {item.step}
+                      </div>
+                      <Icon className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground mb-4">{item.title}</h3>
+                    <p className="text-lg text-muted-foreground font-medium leading-relaxed">{item.desc}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Template Gallery */}
+        <section id="templates" className="py-32 bg-slate-50 dark:bg-slate-900/50 border-y border-border/50">
+          <div className="max-w-[1600px] mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16 px-4">
+              <div className="max-w-2xl">
+                <h2 className="text-4xl sm:text-5xl font-black text-foreground tracking-tight mb-6">Stand out with stunning templates</h2>
+                <p className="text-xl text-muted-foreground font-medium">Every template is optimized to bypass Applicant Tracking Systems (ATS) while catching the human recruiter's eye.</p>
+              </div>
+              <Link href="/editor">
+                <Button variant="outline" size="lg" className="h-12 px-6 rounded-full border-2 font-bold hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all">
+                  Browse All 17 Templates <ChevronRight className="w-5 h-5 ml-1" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {featuredTemplates.map((template) => (
+                <div key={template.id} className="transform transition duration-500 hover:-translate-y-2">
+                  <TemplateCard 
+                    template={template} 
+                    selected={false} 
+                    onSelect={() => router.push('/editor')} 
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Features */}
+        <section id="features" className="py-32">
+          <div className="max-w-[1400px] mx-auto px-6">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <h2 className="text-4xl sm:text-5xl font-black text-foreground tracking-tight mb-6">Everything you need to get hired</h2>
+              <p className="text-xl text-muted-foreground font-medium">We've built the most powerful, user-friendly resume editor on the market.</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                { title: 'ATS-Friendly Formats', desc: 'Our templates are technically constructed to easily parse through any Applicant Tracking System without failing.', icon: ShieldCheck, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+                { title: 'Real-Time Preview', desc: 'See exactly how your resume looks as you type. No more guessing or blind editing.', icon: Layout, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+                { title: 'Lightning Fast', desc: 'Built on modern technology so the editor never lags, even with massive resumes.', icon: Zap, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+                { title: '1-Click Export', desc: 'Instantly generate high-resolution, print-ready PDFs of your resume.', icon: Download, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-500/10' },
+                { title: '100% Free Forever', desc: 'No paywalls, no watermarks, no hidden fees. Build your resume entirely for free.', icon: Sparkles, color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-500/10' },
+                { title: '17+ Elite Designs', desc: 'Whether you need something traditional or highly creative, we have a template for you.', icon: FileText, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
+              ].map((feature, i) => (
+                <div key={i} className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-lg hover:shadow-xl transition-shadow group">
+                  <div className={`w-14 h-14 rounded-2xl ${feature.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className={`w-7 h-7 ${feature.color}`} />
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
+                  <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{feature.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-24 px-6">
+          <div className="max-w-[1200px] mx-auto bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <div className="absolute -top-40 -right-40 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+            
+            <div className="relative z-10">
+              <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tight mb-8">Ready to boost your career?</h2>
+              <p className="text-xl text-blue-100 font-medium mb-12 max-w-2xl mx-auto">
+                Stop struggling with Word documents. Build a beautiful, recruiter-approved resume in 5 minutes.
+              </p>
+              <Link href="/editor">
+                <Button size="lg" className="h-16 px-10 rounded-full bg-white hover:bg-blue-50 text-blue-600 text-xl font-bold shadow-2xl hover:scale-105 transition-all duration-300">
+                  Create Resume Now — It's Free
+                </Button>
+              </Link>
+              <p className="mt-6 text-blue-200 font-medium text-sm">No credit card required. No account needed.</p>
+            </div>
+          </div>
+        </section>
+      </main>
 
       {/* Footer */}
-      <footer className="bg-card border-t border-border py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-primary-foreground" />
+      <footer className="bg-slate-50 dark:bg-slate-950 border-t border-border pt-20 pb-10 mt-20">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
+            <div className="col-span-2 lg:col-span-2 pr-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                  <FileText className="w-5 h-5 fill-white/20" />
                 </div>
-                <span className="font-bold text-foreground">ResumeFlow</span>
+                <span className="text-2xl font-black tracking-tight text-foreground">
+                  Resume<span className="text-blue-600">Flow</span>
+                </span>
               </div>
-              <p className="text-muted-foreground text-sm">Build resumes that get results.</p>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium mb-8">
+                The fastest, most intuitive way to build professional resumes that get you hired. Designed by recruiters, built for you.
+              </p>
             </div>
+            
             <div>
-              <h4 className="font-semibold text-foreground mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Templates
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Pricing
-                  </Link>
-                </li>
+              <h4 className="font-bold text-foreground mb-6 uppercase tracking-wider text-sm">Product</h4>
+              <ul className="space-y-4 text-slate-500 dark:text-slate-400 font-medium">
+                <li><Link href="/editor" className="hover:text-blue-600 transition-colors">Resume Builder</Link></li>
+                <li><Link href="#templates" className="hover:text-blue-600 transition-colors">Templates</Link></li>
+                <li><Link href="#features" className="hover:text-blue-600 transition-colors">Features</Link></li>
               </ul>
             </div>
+            
             <div>
-              <h4 className="font-semibold text-foreground mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Careers
-                  </Link>
-                </li>
+              <h4 className="font-bold text-foreground mb-6 uppercase tracking-wider text-sm">Resources</h4>
+              <ul className="space-y-4 text-slate-500 dark:text-slate-400 font-medium">
+                <li><a href="#" className="hover:text-blue-600 transition-colors">Resume Examples</a></li>
+                <li><a href="#" className="hover:text-blue-600 transition-colors">Cover Letters</a></li>
+                <li><a href="#" className="hover:text-blue-600 transition-colors">Career Blog</a></li>
               </ul>
             </div>
+            
             <div>
-              <h4 className="font-semibold text-foreground mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Privacy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Terms
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground transition">
-                    Contact
-                  </Link>
-                </li>
+              <h4 className="font-bold text-foreground mb-6 uppercase tracking-wider text-sm">Legal</h4>
+              <ul className="space-y-4 text-slate-500 dark:text-slate-400 font-medium">
+                <li><a href="#" className="hover:text-blue-600 transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-blue-600 transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-blue-600 transition-colors">Contact Us</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-border pt-8">
-            <p className="text-center text-sm text-muted-foreground">
-              © 2026 ResumeFlow. All rights reserved.
-            </p>
+          
+          <div className="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 font-medium text-sm">
+            <p>© {new Date().getFullYear()} ResumeFlow. All rights reserved.</p>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-blue-600 transition-colors">Twitter</a>
+              <a href="#" className="hover:text-blue-600 transition-colors">LinkedIn</a>
+              <a href="#" className="hover:text-blue-600 transition-colors">Github</a>
+            </div>
           </div>
         </div>
       </footer>

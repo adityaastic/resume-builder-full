@@ -235,32 +235,44 @@ export default function EditorPage() {
   if (isEditing) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b border-border bg-card sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <header className="border-b border-border bg-card sticky top-0 z-50 shadow-sm">
+          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setIsEditing(false)}
-                className="text-muted-foreground hover:text-foreground transition"
+                className="text-muted-foreground hover:text-foreground flex items-center gap-2"
               >
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <h1 className="text-xl font-bold text-foreground">Editing - {TEMPLATES.find((t) => t.id === selectedTemplate)?.name} Template</h1>
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Templates</span>
+              </Button>
+              <div className="h-4 w-px bg-border hidden sm:block" />
+              <h1 className="text-sm sm:text-base font-bold text-foreground truncate max-w-[150px] sm:max-w-none">
+                {TEMPLATES.find((t) => t.id === selectedTemplate)?.name} Template
+              </h1>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-muted-foreground">
-                Auto-saving...
-              </div>
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setIsEditing(false)}
+                className="hidden sm:flex text-xs border-primary/20 hover:border-primary/50 text-primary hover:bg-primary/5"
+              >
+                Change Template
+              </Button>
+              <div className="h-4 w-px bg-border hidden sm:block" />
               <ThemeToggle />
             </div>
           </div>
         </header>
 
         <div className="grid md:grid-cols-2 gap-0">
-          <div className="border-r border-border overflow-y-auto max-h-[calc(100vh-64px)]">
+          <div className="border-r border-border overflow-y-auto max-h-[calc(100vh-48px)]">
             <ResumeEditor data={resumeData} onChange={setResumeData} selectedTemplate={selectedTemplate} />
           </div>
 
-          <div className="bg-secondary/30 overflow-y-auto max-h-[calc(100vh-64px)] p-8 flex justify-center">
+          <div className="bg-secondary/30 overflow-y-auto max-h-[calc(100vh-48px)] p-8 flex justify-center">
             <div id="resume-output" className="w-full">
               {renderTemplate(selectedTemplate)}
             </div>
@@ -273,7 +285,7 @@ export default function EditorPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
@@ -286,7 +298,7 @@ export default function EditorPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-12">
           <p className="text-lg text-muted-foreground mb-8">
             Browse our professionally designed resume templates organized by category. Click on any template to select and start editing.

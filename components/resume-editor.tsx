@@ -120,7 +120,7 @@ export function ResumeEditor({ data, onChange, selectedTemplate }: ResumeEditorP
   return (
     <div className="w-full">
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 sticky top-16 z-40 bg-card border-b border-border rounded-none">
+        <TabsList className="grid w-full grid-cols-4 sticky top-0 z-40 bg-card border-b border-border rounded-none shadow-sm">
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
           <TabsTrigger value="experience">Experience</TabsTrigger>
           <TabsTrigger value="education">Education</TabsTrigger>
@@ -235,9 +235,14 @@ export function ResumeEditor({ data, onChange, selectedTemplate }: ResumeEditorP
 
         {/* Experience */}
         <TabsContent value="experience" className="space-y-6 p-6">
-          <Button onClick={addExperience} variant="outline" className="w-full border-border bg-transparent">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Experience
+          <Button 
+            onClick={addExperience} 
+            variant="outline" 
+            className="w-full border-2 border-dashed border-primary/30 py-8 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col gap-2 h-auto group bg-transparent"
+          >
+            <Plus className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+            <span className="font-bold text-base text-foreground">Add Work Experience</span>
+            <p className="text-sm text-muted-foreground">Click to add a new job or project</p>
           </Button>
 
           <div className="space-y-6">
@@ -300,9 +305,14 @@ export function ResumeEditor({ data, onChange, selectedTemplate }: ResumeEditorP
 
         {/* Education */}
         <TabsContent value="education" className="space-y-6 p-6">
-          <Button onClick={addEducation} variant="outline" className="w-full border-border bg-transparent">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Education
+          <Button 
+            onClick={addEducation} 
+            variant="outline" 
+            className="w-full border-2 border-dashed border-primary/30 py-8 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col gap-2 h-auto group bg-transparent"
+          >
+            <Plus className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+            <span className="font-bold text-base text-foreground">Add Education History</span>
+            <p className="text-sm text-muted-foreground">Click to add degrees, certificates, or courses</p>
           </Button>
 
           <div className="space-y-6">
@@ -365,9 +375,13 @@ export function ResumeEditor({ data, onChange, selectedTemplate }: ResumeEditorP
 
         {/* Skills */}
         <TabsContent value="skills" className="space-y-6 p-6">
-          <Button onClick={addSkill} variant="outline" className="w-full border-border bg-transparent">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Skill
+          <Button 
+            onClick={addSkill} 
+            variant="outline" 
+            className="w-full border-2 border-dashed border-primary/30 py-6 hover:border-primary/50 hover:bg-primary/5 transition-all flex flex-col gap-2 h-auto group bg-transparent"
+          >
+            <Plus className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+            <span className="font-bold text-base text-foreground">Add New Skill</span>
           </Button>
 
           <div className="grid md:grid-cols-2 gap-4">
